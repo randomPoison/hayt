@@ -15,6 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Install xmllint
+      run: sudo apt-get install -y git build-essential nodejs nodejs-legacy npm coffeescript redis-server libgd2-xpm-dev libicu-dev
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
