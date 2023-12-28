@@ -18,7 +18,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -y git build-essential nodejs nodejs-legacy npm coffeescript redis-server libgd2-xpm-dev libicu-dev
+        sudo apt-get install -y git build-essential nodejs npm coffeescript redis-server libgd2-xpm-dev libicu-dev
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
