@@ -18,7 +18,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update -qq
-        sudo apt-get install -y git build-essential nodejs npm coffeescript redis-server libicu-dev python2
+        sudo apt-get install -y git build-essential nodejs npm coffeescript redis-server libicu-dev libgd-dev python2
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
