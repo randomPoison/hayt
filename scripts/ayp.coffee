@@ -8,7 +8,6 @@ Redis = require 'redis'
 GD = require 'node-gd'
 S3 = require 'node-s3'
 HTTP = require 'scoped-http-client'
-Twitter = require '../lib/twitter'
 
 ## Knobs and buttons
 
@@ -256,20 +255,6 @@ module.exports = (robot) ->
             "Have a comic",
             "#pants",
           ]
-          Twitter.mediaTweet strip.info.image_jpeg, "#{prefix} - #{strip.info.url}", (err, tweet, url) =>
-            sorry = msg.random ["sorry", "it's your fault"]
-            # We will fix this when we fix twitter
-            # return msg.reply "Well, I fucked tweeting that RIGHT up, #{sorry}: #{err}" if err
-            return if err
-            prefix = msg.random [
-              "SHARE FAVE RT",
-              "Connect with #brands",
-              "Promoted by #a",
-              "I put it on twitter, shitbirds",
-            ]
-            msg.send "#{prefix} #{url}"
-
-
 
 # This wraps up everything that builds the image strips of the comic
 #
