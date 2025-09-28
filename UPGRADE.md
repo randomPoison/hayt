@@ -20,13 +20,17 @@
       to `~0.3.0` to prevent a newer version from being pulled in.
     * wolfram - The dependency on nodeselect has been changed from `^ 0.18.0` to
       `~0.18.0` to avoid pulling a newer minor version.
-    * phantomjs - Changed dependency to `phantomjs-prebuilt@^2.1.16`. I meant to
-      vendor this one, but accidentally pulled down the latest version and it at
-      least installed correctly. We'll probably hit runtime errors, but I shall
-      deal with that when we hit it.
+    * phantomjs - Removed entirely because it was broken, and we maybe don't
+      need it?
     * hubot, express - express's dependency on debug was changed from `*` (very
       bad, i will swear a blood oath to destroy you if you ever do this) to
       `~0.8.1` (sane, rational, you will go to heaven). Hubot had to be forked
       as well, since it's the one that was depending on express.
     * hubot-calculator - The dependency on mathjs was changed from `>= 0.25.0`
       (evil) to `~0.25.0` (less evil).
+    * twitter - Removed entirely because it was broken anyway.
+    * bindings - Added as a dependency to fix the version used by a transitive
+      dependency (though I thought that wasn't possible because npm doesn't
+      support overriding dependencies? idk but this seemed to work).
+  * There is also a dependency on libgd-dev, so make sure to `apt install` it
+    next time.
