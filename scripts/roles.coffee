@@ -5,10 +5,12 @@
 #   hubot <user> is a badass guitarist - assign a role to a user
 #   hubot <user> is not a badass guitarist - remove a role from a user
 #   hubot who is <user> - see what roles a user has
+#   hubot who are <role> - see all users who have a specific role
 #
 # Examples:
 #   hubot holman is an ego surfer
 #   hubot holman is not an ego surfer
+#   hubot who are ego surfers
 
 module.exports = (robot) ->
 
@@ -89,6 +91,20 @@ module.exports = (robot) ->
         else
           user.roles = (role for role in user.roles when role isnt newRole)
           msg.send "Ok, #{name} is no longer #{newRole}."
+      else if users.length > 1
+        msg.send getAmbiguousUserText users
+      else
+        msg.send "I don't know anything about #{name}."
+
+  robot.respond /@?([\w .\-_]+) is not anybody important[.!]*$/i, (msg) ->
+    name = msg.match[1].trim()
+
+    unless name in ['', 'who', 'what', 'where', 'when', 'why']
+      users = robot.brain.usersForFuzzyName(name)
+      if users.length is 1
+        user = users[0]
+        user.roles = [ ]
+        msg.send "Ok, #{name} is not anybody important."
       else if users.length > 1
         msg.send getAmbiguousUserText users
       else
