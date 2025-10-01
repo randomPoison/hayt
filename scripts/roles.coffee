@@ -93,3 +93,25 @@ module.exports = (robot) ->
         msg.send getAmbiguousUserText users
       else
         msg.send "I don't know anything about #{name}."
+
+  robot.respond /who are (.*)/i, (msg) ->
+    targetRole = msg.match[1].trim()
+
+    if targetRole is ""
+      msg.send "Who are what? You need to specify a role."
+      return
+
+    usersWithRole = []
+
+    # Get all users from the brain and check their roles.
+    for userId, user of robot.brain.users()
+      if user.roles and targetRole in user.roles
+        usersWithRole.push(user.name)
+
+    if usersWithRole.length > 0
+      if usersWithRole.length is 1
+        msg.send "#{usersWithRole[0]} is #{targetRole}."
+      else
+        msg.send "They are #{targetRole}: #{usersWithRole.join(', ')}."
+    else
+      msg.send "Nobody is #{targetRole}."
