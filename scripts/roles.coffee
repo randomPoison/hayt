@@ -21,7 +21,7 @@ module.exports = (robot) ->
   getAmbiguousUserText = (users) ->
     "Be more specific, I know #{users.length} people named like that: #{(user.name for user in users).join(", ")}"
 
-  robot.respond /who is @?([\w .\-]+)\?*$/i, (msg) ->
+  robot.respond /who is (?!not )@?([\w .\-]+)\?*$/i, (msg) ->
     joiner = ', '
     name = msg.match[1].trim()
 
@@ -71,6 +71,20 @@ module.exports = (robot) ->
     else
       msg.send "I don't know anything about #{name}."
 
+  robot.respond /@?([\w .\-_]+) is not anybody important[.!]*$/i, (msg) ->
+    name = msg.match[1].trim()
+
+    unless name in ['', 'who', 'what', 'where', 'when', 'why']
+      users = robot.brain.usersForFuzzyName(name)
+      if users.length is 1
+        user = users[0]
+        user.roles = [ ]
+        msg.send "Ok, #{name} is not anybody important."
+      else if users.length > 1
+        msg.send getAmbiguousUserText users
+      else
+        msg.send "I don't know anything about #{name}."
+
   robot.respond /@?([\w .\-_]+) is not (["'\w: \-_]+)[.!]*$/i, (msg) ->
     name    = msg.match[1].trim()
     newRole = msg.match[2].trim()
@@ -91,20 +105,6 @@ module.exports = (robot) ->
         else
           user.roles = (role for role in user.roles when role isnt newRole)
           msg.send "Ok, #{name} is no longer #{newRole}."
-      else if users.length > 1
-        msg.send getAmbiguousUserText users
-      else
-        msg.send "I don't know anything about #{name}."
-
-  robot.respond /@?([\w .\-_]+) is not anybody important[.!]*$/i, (msg) ->
-    name = msg.match[1].trim()
-
-    unless name in ['', 'who', 'what', 'where', 'when', 'why']
-      users = robot.brain.usersForFuzzyName(name)
-      if users.length is 1
-        user = users[0]
-        user.roles = [ ]
-        msg.send "Ok, #{name} is not anybody important."
       else if users.length > 1
         msg.send getAmbiguousUserText users
       else
