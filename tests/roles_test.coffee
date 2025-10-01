@@ -158,3 +158,50 @@ describe 'roles management', ->
       charlie = room.robot.brain.userForName('charlie')
       expect(charlie.roles).to.contain 'a specific user'
       expect(room.messages[1][1]).to.eql 'Ok, charlie is a specific user.'
+
+  context 'nuking roles', ->
+    beforeEach ->
+      # Give bob some initial roles to clear.
+      bob = room.robot.brain.userForName('bob')
+      bob.roles = ['a badass guitarist', 'a coffee enthusiast', 'a code reviewer']
+
+    it 'should clear all roles', ->
+      room.user.say 'alice', '@hubot bob is not anybody important'
+
+      bob = room.robot.brain.userForName('bob')
+      expect(bob.roles).to.eql []
+      expect(room.messages[1][1]).to.eql 'Ok, bob is not anybody important.'
+
+    it 'should work with a period.', ->
+      room.user.say 'alice', '@hubot bob is not anybody important.'
+
+      bob = room.robot.brain.userForName('bob')
+      expect(bob.roles).to.eql []
+      expect(room.messages[1][1]).to.eql 'Ok, bob is not anybody important.'
+
+    it 'should work with an exclamation mark!', ->
+      room.user.say 'alice', '@hubot bob is not anybody important!'
+
+      bob = room.robot.brain.userForName('bob')
+      expect(bob.roles).to.eql []
+      expect(room.messages[1][1]).to.eql 'Ok, bob is not anybody important.'
+
+    it 'should handle unknown users', ->
+      room.user.say 'alice', '@hubot unknown_user is not anybody important'
+      expect(room.messages[1][1]).to.eql "I don't know anything about unknown_user."
+
+    it 'should handle ambiguous usernames', ->
+      # Add charlie_smith for ambiguity testing with charlie.
+      room.robot.brain.userForId('4', name: 'charlie_smith')
+
+      room.user.say 'alice', '@hubot char is not anybody important'
+      expect(room.messages[1][1]).to.contain 'Be more specific, I know 2 people named like that: charlie, charlie_smith'
+
+    it 'should not work for reserved words', ->
+      room.user.say 'alice', '@hubot who is not anybody important'
+      room.user.say 'alice', '@hubot what is not anybody important'
+      room.user.say 'alice', '@hubot where is not anybody important'
+      room.user.say 'alice', '@hubot when is not anybody important'
+      room.user.say 'alice', '@hubot why is not anybody important'
+
+      expect(room.messages.length).to.eql 5  # 5 user messages, no robot responses
