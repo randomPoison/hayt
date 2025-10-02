@@ -98,7 +98,7 @@ describe 'roles management', ->
       room.user.say 'alice', '@hubot unknown_user is not a mystery'
       expect(room.messages[1][1]).to.eql "I don't know anything about unknown_user."
 
-  context 'querying roles', ->
+  context 'querying users', ->
     beforeEach ->
       # Set up some users with different role configurations.
       bob = room.robot.brain.userForName('bob')
@@ -158,3 +158,39 @@ describe 'roles management', ->
       charlie = room.robot.brain.userForName('charlie')
       expect(charlie.roles).to.contain 'a specific user'
       expect(room.messages[1][1]).to.eql 'Ok, charlie is a specific user.'
+
+  context 'querying roles', ->
+    beforeEach ->
+      alice = room.robot.brain.userForName('alice')
+      alice.roles = ['a designer', 'a guitarist']
+
+      bob = room.robot.brain.userForName('bob')
+      bob.roles = ['a developer', 'a guitarist']
+
+    it 'should find a single user with a specific role', ->
+      room.user.say 'alice', '@hubot who are a designer'
+      expect(room.messages[1][1]).to.eql 'alice is a designer.'
+
+    it 'should find multiple users with the same role', ->
+      room.user.say 'alice', '@hubot who are a guitarist'
+      expect(room.messages[1][1]).to.eql 'a guitarist are alice, bob.'
+
+    it 'should handle roles that no one has', ->
+      room.user.say 'alice', '@hubot who are a ninja'
+      expect(room.messages[1][1]).to.eql 'Nobody is a ninja.'
+
+    it 'should handle empty role queries', ->
+      room.user.say 'alice', '@hubot who are '
+      expect(room.messages[1][1]).to.eql 'Who are what? You need to specify a role.'
+
+    # TODO: It should probably be case insensitive.
+    it 'should be case sensitive for role matching', ->
+      room.user.say 'alice', '@hubot who are A Developer'
+      expect(room.messages[1][1]).to.eql 'Nobody is A Developer.'
+
+    it 'should handle users with undefined roles', ->
+      # Create a new user with no roles defined.
+      room.robot.brain.userForId('5', name: 'dave')
+
+      room.user.say 'alice', '@hubot who are a mystery role'
+      expect(room.messages[1][1]).to.eql 'Nobody is a mystery role.'

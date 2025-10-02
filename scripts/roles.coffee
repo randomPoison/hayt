@@ -112,6 +112,6 @@ module.exports = (robot) ->
       if usersWithRole.length is 1
         msg.send "#{usersWithRole[0]} is #{targetRole}."
       else
-        msg.send "They are #{targetRole}: #{usersWithRole.join(', ')}."
+        msg.send "#{targetRole} are #{usersWithRole.join(', ')}."
     else
       msg.send "Nobody is #{targetRole}."
