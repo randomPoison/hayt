@@ -167,6 +167,9 @@ describe 'roles management', ->
       bob = room.robot.brain.userForName('bob')
       bob.roles = ['a developer', 'a guitarist']
 
+      # Leave charlie empty to test that everything works when there's a user
+      # with no roles.
+
     it 'should find a single user with a specific role', ->
       room.user.say 'alice', '@hubot who are a designer'
       expect(room.messages[1][1]).to.eql 'alice is a designer.'
@@ -183,10 +186,9 @@ describe 'roles management', ->
       room.user.say 'alice', '@hubot who are '
       expect(room.messages[1][1]).to.eql 'Who are what? You need to specify a role.'
 
-    # TODO: It should probably be case insensitive.
-    it 'should be case sensitive for role matching', ->
+    it 'should be case insensitive for role matching', ->
       room.user.say 'alice', '@hubot who are A Developer'
-      expect(room.messages[1][1]).to.eql 'Nobody is A Developer.'
+      expect(room.messages[1][1]).to.eql 'bob is a developer.'
 
     it 'should handle users with undefined roles', ->
       # Create a new user with no roles defined.

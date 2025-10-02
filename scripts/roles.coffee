@@ -95,7 +95,7 @@ module.exports = (robot) ->
         msg.send "I don't know anything about #{name}."
 
   robot.respond /who are (.*)/i, (msg) ->
-    targetRole = msg.match[1].trim()
+    targetRole = msg.match[1].trim().toLowerCase()
 
     if targetRole is ""
       msg.send "Who are what? You need to specify a role."
@@ -105,8 +105,11 @@ module.exports = (robot) ->
 
     # Get all users from the brain and check their roles.
     for userId, user of robot.brain.users()
-      if user.roles and targetRole in user.roles
-        usersWithRole.push(user.name)
+      if user.roles
+        for role in user.roles
+          if role.toLowerCase() is targetRole
+            usersWithRole.push(user.name)
+            break
 
     if usersWithRole.length > 0
       if usersWithRole.length is 1
